@@ -1,0 +1,59 @@
+{
+  "project_info": {
+    "project_number": "488158515699",
+    "firebase_url": "https://chatapplication-b9c0b.firebaseio.com",
+    "project_id": "chatapplication-b9c0b",
+    "storage_bucket": "chatapplication-b9c0b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:488158515699:android:e7faa2306337c4bf",
+        "android_client_info": {
+          "package_name": "com.example.joohonga.chatapplication"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "488158515699-96p3qre9eajoiab0gak1rup3joheiqnt.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.joohonga.chatapplication",
+            "certificate_hash": "39aad2e09ea05e6921b202833d2add6e0c009e16"
+          }
+        },
+        {
+          "client_id": "488158515699-8iqrpu1qeep1dm01caetm6esbtiuads9.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "488158515699-8iqrpu1qeep1dm01caetm6esbtiuads9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBcudmYYYbqB2zBbqpFGXB4C6kBEKg9AA4"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "488158515699-8iqrpu1qeep1dm01caetm6esbtiuads9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
