@@ -95,6 +95,10 @@ public class MainActivity extends AppCompatActivity {
                             Toast.makeText(MainActivity.this, "signInWithEmail:success.",
                                     Toast.LENGTH_SHORT).show();
 
+                            Intent intent = new Intent(MainActivity.this, ChattingActivity.class);
+                            startActivity(intent);
+
+
 
                         } else {
                             // If sign in fails, display a message to the user.
