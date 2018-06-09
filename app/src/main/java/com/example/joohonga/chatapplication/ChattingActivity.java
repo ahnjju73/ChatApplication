@@ -4,11 +4,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.joohonga.chatapplication.adapter.MyAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
@@ -16,12 +18,10 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -77,18 +77,19 @@ public class ChattingActivity extends AppCompatActivity {
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String user = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                String key = FirebaseAuth.getInstance().getCurrentUser().getUid();
                 String msg = editText.getText().toString();
                 if(msg.isEmpty()||msg.equals("")){
                     Toast.makeText(ChattingActivity.this,"Type Please",Toast.LENGTH_SHORT).show();
                 }
                 else {
                     SimpleDateFormat dateFormatter = new SimpleDateFormat("E, y-M-d 'at' h:m:s");
-                    DatabaseReference dbRef = database.getReference("user")
+                    DatabaseReference dbRef = database.getReference("users")
                             .child(dateFormatter.format(new Date()));
 
 
                     Map<String, String> message = new HashMap<>();
+                    message.put("key", key);
                     message.put("email", email);
                     message.put("message", msg);
                     dbRef.setValue(message);
@@ -97,16 +98,16 @@ public class ChattingActivity extends AppCompatActivity {
             }
         });
 
-        DatabaseReference dbRef = database.getReference("user");
+        DatabaseReference dbRef = database.getReference("users");
         dbRef.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
 
                 Chat chat = dataSnapshot.getValue(Chat.class);
-
                 // [START_EXCLUDE]
                 // Update RecyclerView
                 dataSet.add(chat);
+
                 adapter.notifyItemInserted(dataSet.size() - 1);
             }
 

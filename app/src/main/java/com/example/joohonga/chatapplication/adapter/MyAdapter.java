@@ -1,4 +1,4 @@
-package com.example.joohonga.chatapplication;
+package com.example.joohonga.chatapplication.adapter;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -7,6 +7,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.joohonga.chatapplication.Chat;
+import com.example.joohonga.chatapplication.R;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.List;
@@ -53,11 +55,11 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
 
         if(viewType == RIGHT_BUBBLE) {
             v = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.left_item_list, parent, false);
+                    .inflate(R.layout.list_right_item, parent, false);
         }
         else {
             v = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.item_list, parent, false);
+                    .inflate(R.layout.list_item, parent, false);
         }
         ViewHolder vh = new ViewHolder(v);
 

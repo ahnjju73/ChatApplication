@@ -10,17 +10,11 @@
         android:layout_height="wrap_content"
         android:id="@+id/textview"
         android:background="@drawable/chat_bubble"
-        android:layout_toLeftOf="@+id/img_view"
+        android:layout_alignParentRight="true"
         android:textSize="20dp"
         android:padding="5dp"
         />
-    <ImageView
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:padding="5dp"
-        android:layout_alignParentRight="true"
-        android:src="@drawable/ic_launcher_background"
-        android:id="@+id/img_view"/>
+
 </RelativeLayout>
 
 
