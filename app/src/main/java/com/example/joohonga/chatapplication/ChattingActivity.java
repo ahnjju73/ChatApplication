@@ -1,5 +1,6 @@
 package com.example.joohonga.chatapplication;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -33,17 +34,24 @@ public class ChattingActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private RecyclerView.Adapter adapter;
     private RecyclerView.LayoutManager layoutManager;
+    private String counterpartUid;
 
     List<Chat> dataSet =new ArrayList<>();  //
     private EditText editText;
     private Button sendButton;
     private FirebaseDatabase database;
     private Button finishBtn;
+    String key;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chatting);
+        Intent intent = getIntent();
+        counterpartUid =intent.getStringExtra("key");
+        key = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        Log.d("userid", counterpartUid);
+
         database = FirebaseDatabase.getInstance();
 
         //take current user email
@@ -77,31 +85,58 @@ public class ChattingActivity extends AppCompatActivity {
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String key = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
                 String msg = editText.getText().toString();
                 if(msg.isEmpty()||msg.equals("")){
                     Toast.makeText(ChattingActivity.this,"Type Please",Toast.LENGTH_SHORT).show();
                 }
                 else {
-                    SimpleDateFormat dateFormatter = new SimpleDateFormat("E, y-M-d 'at' h:m:s");
-                    DatabaseReference dbRef = database.getReference("users")
-                            .child(dateFormatter.format(new Date()));
+
+                    if(database.getReference("message").child(counterpartUid+key)==null) {
+                        SimpleDateFormat dateFormatter = new SimpleDateFormat("E, y-M-d 'at' h:m:s");
+                        DatabaseReference dbRef = database.getReference("message").child(key+counterpartUid)
+                                .child(dateFormatter.format(new Date()));
 
 
-                    Map<String, String> message = new HashMap<>();
-                    message.put("key", key);
-                    message.put("email", email);
-                    message.put("message", msg);
-                    dbRef.setValue(message);
-                    editText.setText("");
+                        Map<String, String> message = new HashMap<>();
+                        message.put("key", key);
+                        message.put("email", email);
+                        message.put("message", msg);
+                        dbRef.setValue(message);
+                        editText.setText("");
+                    }
+                    else
+                    {
+                        SimpleDateFormat dateFormatter = new SimpleDateFormat("E, y-M-d 'at' h:m:s");
+                        DatabaseReference dbRef = database.getReference("message").child(counterpartUid+key)
+                                .child(dateFormatter.format(new Date()));
+
+
+                        Map<String, String> message = new HashMap<>();
+                        message.put("key", key);
+                        message.put("email", email);
+                        message.put("message", msg);
+                        dbRef.setValue(message);
+                        editText.setText("");
+                    }
                 }
             }
         });
 
-        DatabaseReference dbRef = database.getReference("users");
+        DatabaseReference dbRef = database.getReference("message");
         dbRef.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                Log.d("dataSnapShotCheck", dataSnapshot.getKey());
+
+                if(dataSnapshot.getKey().equals(counterpartUid+key)||dataSnapshot.getKey().equals(key+counterpartUid)){
+
+
+                }
+
+
+                Log.d("dataSnapShotCheck", dataSnapshot.getKey());
+
 
                 Chat chat = dataSnapshot.getValue(Chat.class);
                 // [START_EXCLUDE]

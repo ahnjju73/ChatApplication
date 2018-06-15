@@ -53,7 +53,7 @@ public class ProfileFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_profile, null);
+        View v = inflater.inflate(R.layout.fragment_profile, container,false);
         mStorageRef = FirebaseStorage.getInstance().getReference();
 
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences("email", Context.MODE_PRIVATE);

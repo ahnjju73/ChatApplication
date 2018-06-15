@@ -1,6 +1,7 @@
 package com.example.joohonga.chatapplication.fragment;
 
 import android.os.Bundle;
+import android.support.annotation.LongDef;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -11,9 +12,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.joohonga.chatapplication.Friend;
+import com.example.joohonga.chatapplication.User;
 import com.example.joohonga.chatapplication.R;
-import com.example.joohonga.chatapplication.adapter.FriendAdapter;
+import com.example.joohonga.chatapplication.adapter.UserAdapter;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -29,10 +31,11 @@ public class FriendsListFragment extends Fragment {
     RecyclerView recyclerView;
     RecyclerView.LayoutManager layoutManager;
 
-    FriendAdapter friendAdapter;
-    List<Friend> friendList = new ArrayList<>();
+    UserAdapter userAdapter;
+    List<User> userList = new ArrayList<>();
     FirebaseDatabase firebaseDatabase;
     DatabaseReference mRef;
+    String currentUid;
 
 
 
@@ -40,14 +43,8 @@ public class FriendsListFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_friends_list,container,false);
-
-        recyclerView = v.findViewById(R.id.friend_list);
-        recyclerView.setHasFixedSize(true);
-
-        friendAdapter = new FriendAdapter(friendList, getActivity());
-        layoutManager = new LinearLayoutManager(getActivity());
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setAdapter(friendAdapter);
+        Log.d("FriendFragment","test");
+        currentUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         firebaseDatabase = FirebaseDatabase.getInstance();
         mRef = firebaseDatabase.getReference("users");
@@ -56,13 +53,17 @@ public class FriendsListFragment extends Fragment {
             public void onDataChange(DataSnapshot dataSnapshot) {
 
                 for(DataSnapshot temp: dataSnapshot.getChildren()){
+                    User user = temp.getValue(User.class);
+                    if(!user.getUid().equals(currentUid)) {
+                        Log.d("FriendFragmentUserTest", user.toString());
+                        userList.add(user);
+                        userAdapter.notifyItemChanged(userList.size() - 1);
+                        Log.d("FriendFragment", String.valueOf(userAdapter.getItemCount()));
+                    }
 
-                    Friend friend = temp.getValue(Friend.class);
-
-
-                    friendList.add(friend);
-                    friendAdapter.notifyItemChanged(friendList.size()-1);
                 }
+                recyclerView.setAdapter(userAdapter);
+
 
             }
 
@@ -71,6 +72,16 @@ public class FriendsListFragment extends Fragment {
 
             }
         });
+        recyclerView = v.findViewById(R.id.friend_list);
+        recyclerView.setHasFixedSize(true);
+        Log.d("FriendFragment",String.valueOf(userList.size()));
+
+        userAdapter = new UserAdapter(userList, getActivity());
+        Log.d("FriendFragment",String.valueOf(userAdapter.getItemCount()));
+        layoutManager = new LinearLayoutManager(getActivity());
+        recyclerView.setLayoutManager(layoutManager);
+
+
 
         return v;
     }

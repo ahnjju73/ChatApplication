@@ -1,13 +1,19 @@
 package com.example.joohonga.chatapplication;
 
-public class Friend {
+import java.util.ArrayList;
+import java.util.List;
+
+public class User {
     private String email;
     private String photo;
     private String uid;
+    List<User> friends;
 
-    public Friend(){ }
-    public Friend(String email,String photo){
 
+
+    public User(){ }
+    public User(String email, String photo){
+        this.friends = new ArrayList<>();
         this.email = email;
         this.photo = photo;
     }
@@ -34,5 +40,10 @@ public class Friend {
 
     public String getUid() {
         return uid;
+    }
+
+    @Override
+    public String toString() {
+        return this.getEmail()+this.getUid()+this.getPhoto();
     }
 }
