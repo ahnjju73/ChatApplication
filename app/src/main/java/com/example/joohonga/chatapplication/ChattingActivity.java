@@ -36,7 +36,7 @@ public class ChattingActivity extends AppCompatActivity {
     private RecyclerView.LayoutManager layoutManager;
     private String counterpartUid;
 
-    List<Chat> dataSet =new ArrayList<>();  //
+    List<Chat> dataSet = new ArrayList<>();  //
     private EditText editText;
     private Button sendButton;
     private FirebaseDatabase database;
@@ -48,7 +48,7 @@ public class ChattingActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chatting);
         Intent intent = getIntent();
-        counterpartUid =intent.getStringExtra("key");
+        counterpartUid = intent.getStringExtra("key");
         key = FirebaseAuth.getInstance().getCurrentUser().getUid();
         Log.d("userid", counterpartUid);
 
@@ -56,15 +56,14 @@ public class ChattingActivity extends AppCompatActivity {
 
         //take current user email
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if(user!=null)
+        if (user != null)
             email = user.getEmail();
 
 
         finishBtn = findViewById(R.id.end_btn);
         recyclerView = findViewById(R.id.recycler_view);
         editText = findViewById(R.id.edtext);       //type message
-        sendButton =findViewById(R.id.send_btn);    //send Button
-
+        sendButton = findViewById(R.id.send_btn);    //send Button
 
 
         finishBtn.setOnClickListener(new View.OnClickListener() {
@@ -87,14 +86,14 @@ public class ChattingActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 String msg = editText.getText().toString();
-                if(msg.isEmpty()||msg.equals("")){
-                    Toast.makeText(ChattingActivity.this,"Type Please",Toast.LENGTH_SHORT).show();
-                }
-                else {
+                if (msg.isEmpty() || msg.equals("")) {
+                    Toast.makeText(ChattingActivity.this, "Type Please", Toast.LENGTH_SHORT).show();
+                } else {
+                    
 
-                    if(database.getReference("message").child(counterpartUid+key)==null) {
+                    if (database.getReference("message") == null) {
                         SimpleDateFormat dateFormatter = new SimpleDateFormat("E, y-M-d 'at' h:m:s");
-                        DatabaseReference dbRef = database.getReference("message").child(key+counterpartUid)
+                        DatabaseReference dbRef = database.getReference("message").child(key + counterpartUid)
                                 .child(dateFormatter.format(new Date()));
 
 
@@ -104,11 +103,9 @@ public class ChattingActivity extends AppCompatActivity {
                         message.put("message", msg);
                         dbRef.setValue(message);
                         editText.setText("");
-                    }
-                    else
-                    {
+                    } else {
                         SimpleDateFormat dateFormatter = new SimpleDateFormat("E, y-M-d 'at' h:m:s");
-                        DatabaseReference dbRef = database.getReference("message").child(counterpartUid+key)
+                        DatabaseReference dbRef = database.getReference("message").child(counterpartUid + key)
                                 .child(dateFormatter.format(new Date()));
 
 
@@ -127,23 +124,32 @@ public class ChattingActivity extends AppCompatActivity {
         dbRef.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                Log.d("dataSnapShotCheck", dataSnapshot.getKey());
 
-                if(dataSnapshot.getKey().equals(counterpartUid+key)||dataSnapshot.getKey().equals(key+counterpartUid)){
+                if (dataSnapshot.getKey().equals(counterpartUid + key)) {
+                    Log.d("dataSnapShotCheck", dataSnapshot.getKey());
+
+                    for (DataSnapshot temp : dataSnapshot.getChildren()) {
+                        Chat chat = temp.getValue(Chat.class);
+                        // [START_EXCLUDE]
+                        // Update RecyclerView
+                        dataSet.add(chat);
+                        adapter.notifyItemInserted(dataSet.size() - 1);
+                    }
+
+                } else if (dataSnapshot.getKey().equals(key + counterpartUid)) {
+                    Log.d("dataSnapShotCheck", dataSnapshot.getKey());
 
 
+                    for (DataSnapshot temp : dataSnapshot.getChildren()) {
+                        Chat chat = temp.getValue(Chat.class);
+                        // [START_EXCLUDE]
+                        // Update RecyclerView
+                        dataSet.add(chat);
+                        adapter.notifyItemInserted(dataSet.size() - 1);
+                    }
                 }
 
 
-                Log.d("dataSnapShotCheck", dataSnapshot.getKey());
-
-
-                Chat chat = dataSnapshot.getValue(Chat.class);
-                // [START_EXCLUDE]
-                // Update RecyclerView
-                dataSet.add(chat);
-
-                adapter.notifyItemInserted(dataSet.size() - 1);
             }
 
             @Override
